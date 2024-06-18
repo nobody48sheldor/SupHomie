@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>HELLO !</title>
+		<meta charset="utf-8">
+		<font face="Arial">
+		<link rel="stylesheet" href="{{ url_for('static', filename='style-todo.css') }}">
+		<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+	</head>
+
+	<body>
+		<div id="vue">
+		<div id="main-page">
+
+			<div class="left-pannel">
+				<p> this is the left pannel </p>
+			</div>
+
+			<div class="title">
+				<p>ToDo-Manager</p>
+			</div>
+
+			<div class="quickActions">
+				<a href="https://www.youtube.com/"><img src="{{ url_for('static', filename='add.png') }}"></a>
+				<a href="https://app.todoist.com/app/"><img src="{{ url_for('static', filename='todoist.png') }}"></a>
+				<a href="https://cahier-de-prepa.fr/mp-pasteur/"><img src="{{ url_for('static', filename='cahier-de-prepa.png') }}"></a>
+				<a href="https://mail.google.com/mail/u/0/#all"><img src="{{ url_for('static', filename='gmail.png') }}"></a>
+			</div>
+
+			<div class="search">
+						<form action="#" method="post">
+							<input id="searchbar" type="text" name="searched" autofocus placeholder="search" value="{{ request.form['searched'] }}" required v-model="hist" autocomplete="off" >
+			</div>
+
+
+
+
+			<div tabindex="-1" class="dash">
+			</div>
+
+
+		</div>
+		</div>
+
+		<script type="text/javascript" src="{{ url_for('static', filename='main.js') }}"> </script>
+	</body>
+</html>

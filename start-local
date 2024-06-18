@@ -1,0 +1,2 @@
+export FLASK_APP=/home/arnaud/Desktop/arnaud/code/web/SupHomie/SupHomie/backend.py;
+flask run
