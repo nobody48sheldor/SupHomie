@@ -1,9 +1,10 @@
-console.log('hey wassup how is it going, saying it live from the main.js file homie')
+console.log('hey wassup homie !')
 
 const { createApp } = Vue
-const main = {
+var main = {
 	data()
 	{
+
 		return {
 			hist: "",
 		}

@@ -61,7 +61,7 @@
 			</div>
 
 			<div class="greet">
-				<p>Hi {{ Cont['user'][0] }} !</p>
+				<p> {{ Cont['user'][0] }} </p>
 			</div>
 
 			<div class="shortcuts">
@@ -107,7 +107,16 @@
 
 
 			<div class="right-pannel">
-				<p> this is the  right pannel </p>
+				<div class="time-widget">
+					<p> time </p>
+				</div>
+				<div class="news">
+					<iframe width="100%" height="100%" src="/news" title="CahierDePrepa" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+				</div>
+				<div class="news-summary">
+					<p> {{ Cont['summary'] }} </p>
+				</div>
+
 			</div>
 
 		</div>
