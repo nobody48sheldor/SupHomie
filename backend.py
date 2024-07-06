@@ -14,14 +14,6 @@ app = Flask(__name__)
 # app.config['SECRET_KEY'] = os.urandom(24).hex()
 
 
-# variables
-
-    # history
-
-H = [" "," "," "," "," "]
-USER = [""]
-DAY = ["", ""]
-Cont = {'history': H, 'user': USER, 'day': DAY, 'summary': "Summary !"}
 
 
     # news
@@ -36,6 +28,7 @@ def get_news(number=5, query="World News"):
         latest_news[i].append(json_resp[i]['published date'])
         latest_news[i].append(json_resp[i]['url'])
         latest_news[i].append(json_resp[i]['publisher']['title'])
+        latest_news[i].append("")
     return(latest_news)
 
 def get_summary(url, number=5):
@@ -77,8 +70,7 @@ def get_summary(url, number=5):
     print(m)
 
     #os.system("killall ollama")
-    Cont['summary'] = m
-    return( render_template("index.html", Cont=Cont) )
+    return( m )
 
 # route / (index)
 
@@ -109,6 +101,24 @@ def search():
 
 
 
+# variables
+
+
+H = [" "," "," "," "," "]
+USER = [""]
+DAY = ["", ""]
+Cont = {'history': H, 'user': USER, 'day': DAY, 'summary': "Summary !"}
+current = 0
+
+latest_news = get_news()
+latest_news.append( [len(latest_news)] )
+latest_news.append( [0] )
+
+
+
+
+
+
 # route /todo-widget (todo)
 
 @app.route("/todo-widget")
@@ -124,16 +134,22 @@ def news():
     latest_news = get_news()
     size = len(latest_news)
     latest_news.append([size])
+    latest_news.append([current])
+    print(latest_news)
     return( render_template("news.html", value=latest_news) )
 
 @app.route("/news", methods=["GET", "POST"])
 def news_news():
     url = request.form.get("news",None)
-    print(url)
-    get_summary(url)
-    latest_news = get_news()
-    size = len(latest_news)
-    latest_news.append([size])
+    new_index = request.form.get("switch",None)
+    if url:
+        print(url)
+        summary = get_summary(url)
+        latest_news[ latest_news[6][0] ][4] = summary
+    if new_index != None:
+        print(new_index)
+        current = int( new_index )
+        latest_news[6][0] = current
     return( render_template("news.html", value=latest_news) )
 
 

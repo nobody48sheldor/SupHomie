@@ -8,21 +8,40 @@
 		<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 	</head>
 
-	<body>
+	<body class="news">
 		<div id="vue">
-		<div id="main-page">
+		<div id="main-page-news">
 			<div class="article-container">
-					{% for i in range(value[-1][0]) %}
-					<form action="#" method="post">
-						<div class="article">
-						<button name="news" value="{{ value[i][2] }}">
-							<p class="title_article">{{ value[i][0]}}</p>
-							<p class="date_article">{{ value[i][1]}}</p>
+
+				<form action="#" method="post">
+					<button class="before" name="switch" value="{{ (value[6][0]-1)%(value[5][0]) }}">
+						<p>( {{ (value[6][0]-1)%(value[5][0]) }} )</p>
+					</button>
+				</form>
+
+				<form action="#" method="post">
+					<div class="article">
+						<button name="news" value="{{ value[ value[6][0] ][2] }}">
+							<p class="title_article">{{ value[ value[6][0] ][0]}}</p>
+							<p class="date_article">{{ value[ value[6][0] ][1]}}</p>
 						</button>
-						</div>
-					</form>
-					{% endfor %}
+					</div>
+				</form>
+
+				<form action="#" method="post">
+					<button class="next" name="switch" value="{{ (value[6][0]+1)%(value[5][0]) }}">
+						<p>( {{ (value[6][0]+1)%(value[5][0]) }} )</p>
+					</button>
+				</form>
+
+				<div class="summary">
+					<p class="summary-text"> Summary : {{ value[ value[6][0] ][4] }} </p>
+				</div>
+
 			</div>
+		
+
+		</div>
 		</div>
 		</div>
 
