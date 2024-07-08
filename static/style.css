@@ -367,7 +367,7 @@ div#main-page-news div.article-container form div.article button {
 
 div#main-page-news div.article-container div.summary{
 	transition: 0.3s ease-in-out;
-	margin: 4pt;
+	margin: 8pt;
 	border-radius: 30px;
 	border: 2px solid gray;
 	font-size: 10pt;
@@ -378,4 +378,18 @@ div#main-page-news div.article-container div.summary{
 div#main-page-news div.article-container div.summary:hover {
 	transition: 0.3s ease-in-out;
 	border: 2px solid white;
+}
+
+div#main-page-news div.article-container input.query-input {
+	color: white;
+	background-color: rgba(24, 100, 171, 0.0);
+	transition: 0.3s ease-in-out;
+	margin: 8pt;
+	border-radius: 30px;
+	border: 2px solid gray;
+	font-size: 10pt;
+	padding-left: 8pt;
+	padding-right: 8pt;
+	text-align: center;
+	outline: none;
 }

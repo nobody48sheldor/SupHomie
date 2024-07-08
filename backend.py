@@ -18,23 +18,22 @@ app = Flask(__name__)
 
     # news
 
-def get_news(number=5, query="World News"):
-    latest_news = [[] for i in range(number)]
+def get_news(number=5, squery="World News"):
+    news = [[] for i in range(number)]
     google_news = GNews(language='en', period='4d', max_results=number, exclude_websites=['yahoo.com'])
-    json_resp = google_news.get_news(query)
+    json_resp = google_news.get_news(squery)
         
     for i in range(number):
-        latest_news[i].append(json_resp[i]['title'])
-        latest_news[i].append(json_resp[i]['published date'])
-        latest_news[i].append(json_resp[i]['url'])
-        latest_news[i].append(json_resp[i]['publisher']['title'])
-        latest_news[i].append("")
-    return(latest_news)
+        news[i].append(json_resp[i]['title'])
+        news[i].append(json_resp[i]['published date'])
+        news[i].append(json_resp[i]['url'])
+        news[i].append(json_resp[i]['publisher']['title'])
+        news[i].append("")
+    return(news)
 
 def get_summary(url, number=5):
     google_news = GNews(language='en', period='4d', max_results=number, exclude_websites=['yahoo.com'])
     text = str(google_news.get_full_article(url))
-    print(text)
 
     text = text.replace('"', ' ')
     text = text.replace("'", ' ')
@@ -47,7 +46,7 @@ def get_summary(url, number=5):
     text = text.replace("\n", ' ')
 
     #os.system("ollama start &")
-    cmd = """curl http://localhost:11434/api/generate -d '{"model": "mistral", "prompt": " """ + "sumarize in LESS THAN 100 WORDS the following text : " + text + """ ", "stream": false }'"""
+    cmd = """curl http://localhost:11434/api/generate -d '{"model": "mistral", "prompt": " """ + "sumarize in LESS THAN 70 WORDS the following text : " + text + """ ", "stream": false }'"""
 
     print(cmd)
 
@@ -56,7 +55,6 @@ def get_summary(url, number=5):
         proc.wait()
         tempf.seek(0)
         m = str(tempf.read())[79::]
-        print()
 
     m_ = ""
     for i in m:
@@ -67,7 +65,8 @@ def get_summary(url, number=5):
 
     m=m_[:-24]
     m=m_[:-45]
-    print(m)
+    if m == "":
+        return("Failed, ollama is not running")
 
     #os.system("killall ollama")
     return( m )
@@ -118,7 +117,6 @@ latest_news.append( [0] )
 
 
 
-
 # route /todo-widget (todo)
 
 @app.route("/todo-widget")
@@ -135,14 +133,14 @@ def news():
     size = len(latest_news)
     latest_news.append([size])
     latest_news.append([current])
-    print(latest_news)
     return( render_template("news.html", value=latest_news) )
 
 @app.route("/news", methods=["GET", "POST"])
 def news_news():
     url = request.form.get("news",None)
     new_index = request.form.get("switch",None)
-    if url:
+    query = request.form.get("query",None)
+    if url !=  None:
         print(url)
         summary = get_summary(url)
         latest_news[ latest_news[6][0] ][4] = summary
@@ -150,6 +148,15 @@ def news_news():
         print(new_index)
         current = int( new_index )
         latest_news[6][0] = current
+    if query != None:
+        news_temp = get_news(squery = query)
+        current = 0
+        news_temp.append( [len(news_temp)] )
+        news_temp.append( [current] )
+        for i in range(len(news_temp)):
+            latest_news[i] = news_temp[i]
+        for i in latest_news:
+            print(i)
     return( render_template("news.html", value=latest_news) )
 
 
