@@ -14,9 +14,34 @@ app = Flask(__name__)
 # app.config['SECRET_KEY'] = os.urandom(24).hex()
 
 
+def list_to_dict(l):
+    d = {}
+    lenght = len(l)
+    for i in range(lenght):
+        d[l[i]] = [l[ (i-1)%lenght ], l[ (i+1)%lenght ]]
+    return(d)
+
+playlist_list_1 = ["Into Yesterday.mp3", "$NOT - BLUE MOON (feat. Teddi Jones) [Official Audio].mp3", "Just Say Yes.mp3", "The Beach Boys - Big Sur (Audio).mp3"]
+playlist_list_2 = ["Madvillain - All Caps.mp3", "Chumbawamba- Tubthumping.mp3", "Beer Goggles.mp3"]
+playlists = {"my_playlist1": list_to_dict(playlist_list_1), "my_playlist2": list_to_dict(playlist_list_2)}
 
 
-    # news
+def tts(text, article_title):
+    tts = gTTS(text=text, lang='en')
+    tts.save('/home/arnaud/Desktop/arnaud/code/web/SupHomie/SupHomie/static/summaries/'+article_title+'.mp3')
+
+def index_of(l, element):
+    index = 0
+    for i in range(len(l)):
+        if l[index] == element:
+            return(index)
+        index += 1
+    return("error")
+
+def get_song(name):
+    cmd = "yt-dlp -x --audio-format mp3 'ytsearch: "+name+"' -o '/home/arnaud/Desktop/arnaud/code/web/SupHomie/SupHomie/static/music/%(title)s.%(ext)s'"
+    os.system(cmd)
+    musics = os.listdir("/home/arnaud/Desktop/arnaud/code/web/SupHomie/SupHomie/static/music/")
 
 def get_news(number=5, squery="World News"):
     news = [[] for i in range(number)]
@@ -68,6 +93,8 @@ def get_summary(url, number=5):
     if m == "":
         return("Failed, ollama is not running")
 
+    tts(m,m[:20])
+
     #os.system("killall ollama")
     return( m )
 
@@ -93,25 +120,65 @@ def index(user_prompt="Hi Arnaud !"):
 
 
 @app.route("/", methods=["GET", "POST"])
-def search():
-    searched = request.form["searched"]
-    H.append(searched)
-    return(redirect("https://www.google.com/search?client=firefox-b-d&q={}".format(searched)))
+def index_search():
+    searched = request.form.get("searched", None)
+    search_song= request.form.get("song",None)
+    change_song = request.form.get("change-song",None)
+    if searched != None:
+        H.append(searched)
+        return(redirect("https://www.google.com/search?client=firefox-b-d&q={}".format(searched)))
+    if search_song != None:
+        print()
+        print()
+        print(search_song)
+        print()
+        print()
+        get_song(search_song)
+        return(index())
+    if  change_song != None:
+        if change_song == "next":
+            Cont["current_music"] = plau_next_song()
+        if change_song == "previous":
+            Cont["current_music"] = play_previous_song()
+        return(index())
+    return(index())
 
 
 
 # variables
 
+musics = os.listdir("/home/arnaud/Desktop/arnaud/code/web/SupHomie/SupHomie/static/music/")
 
 H = [" "," "," "," "," "]
 USER = [""]
 DAY = ["", ""]
-Cont = {'history': H, 'user': USER, 'day': DAY, 'summary': "Summary !"}
+Cont = {'history': H, 'user': USER, 'day': DAY, 'summary': "Summary !", 'musics': musics, "current_music": 0, 'play': 0, 'playlists': ["all_musics" ,"my_playlist1", "my_playlist2"], "playlist_playing": "all_musics"}
 current = 0
 
 latest_news = get_news()
 latest_news.append( [len(latest_news)] )
 latest_news.append( [0] )
+
+
+def play_next_song():
+    musics = os.listdir("/home/arnaud/Desktop/arnaud/code/web/SupHomie/SupHomie/static/music/")
+    Cont["musics"] = musics
+    if Cont["playlist_playing"] == "all_musics":
+        Cont["current_music"] = (Cont["current_music"] + 1 )%(len(Cont["musics"]))
+    else:
+         index_new = index_of( musics, playlists[ Cont["playlist_playing"] ][ str(musics[ Cont["current_music"] ]) ][1] )
+         if index_new != "error":
+             Cont["current_music"] = index_new
+
+def play_previous_song():
+    musics = os.listdir("/home/arnaud/Desktop/arnaud/code/web/SupHomie/SupHomie/static/music/")
+    Cont["musics"] = musics
+    if Cont["playlist_playing"] == "all_musics":
+        Cont["current_music"] = (Cont["current_music"] - 1 )%(len(Cont["musics"]))
+    else:
+         index_new = index_of( musics, playlists[ Cont["playlist_playing"] ][ str(musics[ Cont["current_music"] ]) ][0] )
+         if index_new != "error":
+             Cont["current_music"] = index_new
 
 
 
@@ -159,6 +226,65 @@ def news_news():
             print(i)
     return( render_template("news.html", value=latest_news) )
 
+
+# route /music (music)
+
+@app.route("/music")
+def music(play=0):
+    Cont["play"] = play
+    return( render_template("music.html", Cont=Cont) )
+
+@app.route("/music", methods=["GET", "POST"])
+def music_music():
+    search_song= request.form.get("song",None)
+    change_song = request.form.get("change-song",None)
+    next_song = request.form.get("next_song",None)
+    playbutton = request.form.get("playbutton",None)
+    playlist_play = request.form.get("play_playlist",None)
+    playlist_edit = request.form.get("edit",None)
+    playlist = request.form.get("playlist",None)
+    if playbutton != None:
+        if playbutton == "play":
+            return(music(1))
+        if playbutton == "pause":
+            return(music())
+    if search_song != None:
+        get_song(search_song)
+        musics = dir_list = os.listdir("/home/arnaud/Desktop/arnaud/code/web/SupHomie/SupHomie/static/music/")
+        Cont['musics'] = musics
+        return(music())
+    if change_song != None:
+        print(str(change_song))
+        if str(change_song) == "next":
+            play_next_song()
+            print(Cont["play"])
+            if Cont["play"] == 1:
+               return(music(1))
+            else:
+               return(music())
+        if str(change_song) == "previous":
+            play_previous_song()
+            if Cont["play"] == 1:
+               return(music(1))
+            else:
+               return(music())
+    if next_song != None:
+        print("\n\n\n song \n\n\n")
+        Cont["current_music"] = next_song()
+        return(music(1))
+    if playlist_play != None:
+        if playlist != None:
+            musics = os.listdir("/home/arnaud/Desktop/arnaud/code/web/SupHomie/SupHomie/static/music/")
+            Cont["playlist_playing"] = str(playlist)
+            if str(playlist) == "all_musics":
+                pass
+            else:
+                Cont["current_music"] = index_of( musics, list(playlists[ str(playlist) ].keys())[0] )
+            return(music(1))
+        return(music())
+    if playlist_edit != None:
+        if playlist != None:
+            return(music())
 
 
 

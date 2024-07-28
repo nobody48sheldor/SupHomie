@@ -77,6 +77,7 @@
 			<div class="search">
 						<form action="#" method="post">
 							<input id="searchbar" type="text" name="searched" autofocus placeholder="search" value="{{ request.form['searched'] }}" required v-model="hist" autocomplete="off" >
+						</form>
 			</div>
 
 
@@ -93,7 +94,7 @@
 					<iframe width="100%" height="100%" src="https://cahier-de-prepa.fr/mp-pasteur/" title="CahierDePrepa" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 				</div>
 				<div class="bottom-left" id="dashItem--4">
-					4
+					<iframe width="100%" height="100%" src="/music" title="Music" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 				</div>
 				<div class="bottom-mid" id="dashItem--5">
 					5
@@ -107,12 +108,13 @@
 
 
 			<div class="right-pannel">
-				<div class="time-widget">
-					<p> time </p>
-				</div>
 				<div class="news">
-					<iframe width="100%" height="100%" src="/news" title="CahierDePrepa" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+					<iframe width="100%" height="100%" src="/news" title="News" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
+				</div>
+				<div class="music">
+					<iframe width="100%" height="100%" src="/music" title="CahierDePrepa" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+				</div>
 			</div>
 
 		</div>

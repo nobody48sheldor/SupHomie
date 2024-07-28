@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>HELLO !</title>
+		<meta charset="utf-8">
+		<font face="Arial">
+		<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+		<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+	</head>
+
+	<body class="news" onload = "playmusic()">
+		<div id="vue">
+		<div id="main-page-widget">
+			<div class="music-container">
+
+				<p hidden id="play">
+					{{ Cont['play'] }}
+				</p>
+
+				<audio id="player" src="{{ url_for('static', filename='music/'+Cont['musics'][ Cont['current_music'] ]) }}">
+				</audio>
+
+
+				<form id="next_song" action="#" method="post">
+					<input hidden name="next_song" value="next_song">
+				</form>
+
+				<script>
+					var aud = document.getElementById("myAudio");
+					aud.onended = function() {
+						alert("The audio has ceased");
+					};
+				</script>  
+
+
+				<div class="title-and-actions"> 
+					<div class="title-and-actions-item"> 
+						<form action="#" method="post">
+							<button class="previous" name="change-song" value="previous">previous</button> 
+						</form>
+					</div> 
+
+					<div class="title-and-actions-item"> 
+						<p class="song-title">{{ Cont['musics'][ Cont['current_music'] ][:-4][:18] }}</p>
+					</div> 
+					<div class="title-and-actions-item"> 
+						<form action="#" method="post">
+							<button class="next" name="change-song" value="next">next</button> 
+						</form>
+					</div> 
+
+
+				</div> 
+				<div class="controls"> 
+					<div>
+						<form action="#" method="post">
+							<button name="playbutton" value="play" onclick="document.getElementById('player').play()">Play</button> 
+						</form>
+					</div>
+					<div>
+						<form action="#" method="post">
+							<button name="playbutton" value="pause" onclick="document.getElementById('player').pause()">Pause</button> 
+						</form>
+					</div>
+					<div>
+						<button onclick="document.getElementById('player').volume += 0.1">Vol +</button> 
+					</div>
+					<div>
+						<button onclick="document.getElementById('player').volume -= 0.1">Vol -</button> 
+					</div>
+
+
+				</div>
+				<form action="#" method="post">
+					<input name="song" placeholder="search for songs" class="query-input">
+				</form>
+
+				<div class="playlist">
+					<p class="playlist_title">
+						Playlists
+					</p>
+					<div class="playlist_wrapper">
+						<form action="#" method="post">
+							<div class="select_wrapper">
+								<select name="playlist">
+									<option disabled selected hidden>Select Playlist</option>
+									{% for i in Cont["playlists"] %}
+									<option value="{{ i }}">{{ i }}</option>
+									{% endfor %}
+								</select> 
+							</div>
+							<div class="play_playlist">
+								<button class="play_playlist" name="play_playlist" value="play_playlist">Play</button> 
+							</div>
+							<div class="add_song">
+								<button class="edit" name="edit" value="previous">edit</button>
+							</div>
+						</form>
+					</div>
+				</div>
+
+			</div>
+		</div>
+		</div>
+		</div>
+
+		<script type="text/javascript" src="{{ url_for('static', filename='main.js') }}"> </script>
+	</body>
+</html>
